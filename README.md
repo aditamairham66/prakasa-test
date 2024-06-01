@@ -89,4 +89,3 @@ Proyek ini dilisensikan di bawah [MIT License](LICENSE).
 
 ## Kontak
 Untuk informasi lebih lanjut, kamu bisa menghubungi saya di [Klik untuk mail](mailto:aditamairham66@gmail.com).
-```
