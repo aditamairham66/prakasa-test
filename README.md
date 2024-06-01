@@ -13,8 +13,8 @@ https://documenter.getpostman.com/view/7698325/2sA3Qwb9zX
 Clone repository ini ke direktori lokal kamu menggunakan perintah berikut:
 
 ```bash
-git clone https://github.com/username/project-name.git
-cd project-name
+git clone https://github.com/aditamairham66/prakasa-test.git
+cd prakasa-test
 ```
 
 ### 2. Install Dependencies
