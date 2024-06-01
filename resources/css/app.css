@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.menu > .menu-item > .menu-link:is(.open,.active,:active,:focus) .stroke {
+    stroke: var(--tw-menu-item-active-color);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.menu > .menu-item > .sub-menu > .menu-link:is(.open,.active,:active,:focus) {
+    stroke: var(--tw-menu-item-color);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.menu > .menu-item > .menu-link:is(:hover)  .stroke {
+    stroke: rgb(220 38 38 / 1);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.formCustom {
+    @apply w-full sm:w-2/3;
+}
+
+.badge-notif {
+    @apply absolute top-0 right-0 w-[10px] h-[10px] rounded-full;
+}
+.menuSidebar {
+    @apply min-h-[81vh];
+}
+
+.message {
+    @apply whitespace-pre-line break-words;
+}
+
+#tableNews th:nth-child(1),
+#tableNews td:nth-child(1) {
+    @apply w-[200px] max-w-[200px] min-w-[200px];
+}
+#tableNews th:nth-child(3),
+#tableNews td:nth-child(3) {
+    @apply w-[300px] max-w-[300px] min-w-[300px];
+}
+#tableNews td:nth-child(1),
+#tableNews td:nth-child(3) {
+    @apply balanced-text;
+}
+
+.balanced-text {
+    display: grid;
+    place-items: flex-start;
+    text-align: left;
+    white-space: normal;
+    text-wrap: balance;
+}
+
+.dropdown-menu {
+    @apply py-1 px-2 inline-flex justify-center items-center rounded-md border font-medium bg-white text-gray-900 shadow-sm align-middle hover:bg-gray-50 transition-all text-[12px] dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700 dark:text-gray-600 dark:hover:text-white;
+}
+.dropdown-item {
+    @apply flex items-center py-2 px-3 rounded-md text-sm text-gray-800 hover:bg-gray-100;
+}
+
+.image-detail {
+    @apply w-[200px];
+}
