@@ -34,7 +34,7 @@ class EditRequest extends FormRequest
                 Rule::unique('posts', 'title')->ignore($postId),
             ],
             'date' => 'required|date_format:Y-m-d H:i:s',
-            'image' => 'nullable|image', // image is optional on edit
+            'image' => 'nullable', // image is optional on edit
             'desc' => 'required|min:10',
         ];
     }

@@ -18,6 +18,7 @@ interface PageProps {
 }
 
 const PostForm: React.FC = () => {
+    // @ts-ignore
     const { props } = usePage<PageProps>();
     const { title, form, errors } = props;
 
@@ -83,11 +84,11 @@ const PostForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(data);
+
         if (!form.id) {
           Inertia.post('/post', data, { forceFormData: true });
         } else {
-          Inertia.put(`/post/${form.id}`, data, { forceFormData: true });
+          Inertia.post(`/post/${form.id}?_method=PUT`, data, { forceFormData: true });
         }
     };
 
@@ -185,11 +186,11 @@ const PostForm: React.FC = () => {
                         <label className="self-stretch h-[18px] text-xs font-semibold font-['Poppins']">
                             Description <span className="text-red-500">*</span>
                         </label>
-                        <div id="descContent" className="form-input mt-1">{form.desc}</div>
+                        <div id="descContent" className="form-input mt-1" dangerouslySetInnerHTML={{ __html: form.desc }}></div>
                         <textarea
                             name="desc"
                             id="desc"
-                            className="form-input"
+                            className="form-input hidden"
                             placeholder="Enter Description"
                             value={form.desc}
                             onChange={handleInputChange}
@@ -198,7 +199,7 @@ const PostForm: React.FC = () => {
                     </div>
 
                     <div className="flex justify-start gap-3 mt-5">
-                        <a href="#" className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none">
+                        <a href="#" onClick={e => history.back()} className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none">
                             Back
                         </a>
                         <button type="submit" className="inline-flex items-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none">

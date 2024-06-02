@@ -119,7 +119,9 @@ const Post: React.FC = () => {
                                     <Td>{user?.name}</Td>
                                     <Td>{title}</Td>
                                     <Td>
+                                        {/* @ts-ignore */}
                                         <a href={image} className="image-popup">
+                                            {/* @ts-ignore */}
                                             <img className="h-10 w-10 rounded" src={image} alt="" />
                                         </a>
                                     </Td>

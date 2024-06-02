@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Admin\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class AddRequest extends FormRequest
+class EditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,10 +22,18 @@ class AddRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Get the post ID from the route
+        $postId = $this->route('post') ? $this->route('post')->id : null;
+
         return [
-            'title' => 'required|min:3|max:70|unique:posts,title',
+            'title' => [
+                "required",
+                "min:3",
+                "max:70",
+                Rule::unique('posts', 'title')->ignore($postId),
+            ],
             'date' => 'required',
-            'image' => 'required',
+            'image' => 'nullable', // image is optional on edit
             'desc' => 'required|min:10',
         ];
     }

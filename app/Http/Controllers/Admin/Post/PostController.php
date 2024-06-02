@@ -6,6 +6,7 @@ use App\Enums\TypeMessage;
 use App\Helpers\Upload;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Post\AddRequest;
+use App\Http\Requests\Admin\Post\EditRequest;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -95,16 +96,19 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(EditRequest $request, Post $post)
     {
-        dd($request->all());
         $userId = Auth::user()->id ?? 1;
         $image = Upload::store('image', 'posts');
 
-        $post->update([
+        $data = [];
+        if ($image) {
+            $data['image'] = $image;
+        }
+
+        $post->update($data + [
             'title' => $request->title,
-            'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
-            'image' => $image,
+            'date' => Carbon::parse($request->date)->format('Y-m-d'),
             'desc' => $request->desc,
             'user_id' => $userId,
         ]);

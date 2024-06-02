@@ -50,10 +50,14 @@ class PostController extends Controller
         $userId = Auth::guard('api')->user()->id;
         $image = Upload::store('image', 'posts');
 
-        $post->update([
+        $data = [];
+        if ($image) {
+            $data['image'] = $image;
+        }
+
+        $post->update($data + [
             'title' => $request->title,
             'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
-            'image' => $image,
             'desc' => $request->desc,
             'user_id' => $userId,
         ]);
