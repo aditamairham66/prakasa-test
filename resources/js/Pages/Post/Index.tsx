@@ -14,6 +14,7 @@ interface PageProps {
     title: string; 
     table: { 
         data: PostProps[];
+        from: string;
     };
 }
 
@@ -21,7 +22,6 @@ const Post: React.FC = () => {
     // @ts-ignore
     const { props } = usePage<PageProps>();
     const { title, table }: PageProps= props;
-    console.log(table)
 
     return (
         <AdminLayout>
@@ -53,11 +53,15 @@ const Post: React.FC = () => {
                             table.data.map(({ id, user, title, image }, index) => (
                                 <Row key={id}>
                                     <Td className='ps-4 pe-3'>
-                                        <b>{index + 1}</b>
+                                        <b>{table?.from + index}</b>
                                     </Td>
                                     <Td>{user?.name}</Td>
                                     <Td>{title}</Td>
-                                    <Td>{image}</Td>
+                                    <Td>
+                                        <a href={image} className="image-popup">
+                                            <img className="h-10 w-10 rounded" src={image} alt=""/>
+                                        </a>
+                                    </Td>
                                     <Td></Td>
                                 </Row>
                             ))

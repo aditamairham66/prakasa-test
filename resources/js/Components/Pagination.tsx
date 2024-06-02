@@ -31,7 +31,7 @@ function Pagination({ data: { links, from, to, total } }: PaginationProps) {
     }));
 
     return (
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between py-2">
+        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between py-2 mt-3">
             <nav className="flex items-center space-x-2" aria-label="Pagination">
                 {sanitizedLinks.map((link, key) => (
                     <React.Fragment key={key}>

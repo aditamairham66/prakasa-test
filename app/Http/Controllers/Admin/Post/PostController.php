@@ -20,8 +20,9 @@ class PostController extends Controller
     {
         return inertia('Post/Index', [
             'title' => $this->title,
-            'table' => Post::latest()
+            'table' => Post::query()
                 ->with(['user'])
+                ->orderBy('id', 'ASC')
                 ->paginate(10),
         ]);
     }
