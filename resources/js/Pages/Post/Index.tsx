@@ -55,7 +55,7 @@ const Post: React.FC = () => {
         // Set a new timeout for 500 milliseconds
         searchTimeout = setTimeout(() => {
             handleSearchSubmit(value);
-        }, 5000); // 5 seconds
+        }, 3000); // 3 seconds
     };
 
     const handleSearchSubmit = (value: string) => {

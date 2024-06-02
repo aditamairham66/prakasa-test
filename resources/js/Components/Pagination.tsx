@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/inertia-react';
 import React from 'react';
+import queryString from 'query-string';
 
 export interface PaginationLinkProps {
     label: string;
@@ -21,17 +22,22 @@ function Pagination({ data: { links, from, to, total } }: PaginationProps) {
     
     const addCurrentParamsToUrl = (url: string | null, currentPageUrl: string | null): string | null => {
         if (!url || !currentPageUrl) return null;
-        const currentParams = new URLSearchParams(currentPageUrl.split('?')[1] || ''); // Get current URL params
-        const newParams = new URLSearchParams(); // Create new URL params
-        // Iterate over current params and add them to new params
-        currentParams.forEach((value, key) => {
-            newParams.append(key, value);
-        });
-        // If the URL already has a query string, append '&', otherwise append '?'
-        const separator = url.includes('?') ? '&' : '?';
-        // Append new params to the pagination URL
-        return `${url}${separator}${newParams.toString()}`;
+    
+        const currentParams = queryString.parseUrl(currentPageUrl).query as Record<string, string>;
+        const targetParams = queryString.parseUrl(url).query as Record<string, string>;
+    
+        // Menghapus parameter yang sama dengan base URL dari parameter tujuan
+        for (const key in targetParams) {
+            if (currentParams[key] === targetParams[key]) {
+                delete targetParams[key];
+            }
+        }
+    
+        // Menggabungkan parameter-parameter baru ke dalam URL tujuan
+        const updatedUrl = queryString.stringifyUrl({ url, query: { ...currentParams, ...targetParams } });
+        return updatedUrl;
     };
+    
 
     function getClassName(active: boolean) {
         if (active) {
@@ -46,6 +52,8 @@ function Pagination({ data: { links, from, to, total } }: PaginationProps) {
         label: link.label.replace('Previous', '').replace('Next', ''),
         url: addCurrentParamsToUrl(link.url, url),
     }));
+    console.log(links, sanitizedLinks)
+
 
     return (
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between py-2 mt-3">
