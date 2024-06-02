@@ -8,11 +8,11 @@ export interface User {
 }
 
 export interface Post {
- id: number;
- title: string;
- date: string; // Menggunakan string untuk merepresentasikan tanggal dan waktu
- image: string;
- desc: string;
+ id?: number | null;
+ title?: string | null;
+ date?: string | null; // Menggunakan string untuk merepresentasikan tanggal dan waktu
+ image?: string | null;
+ desc?: string | null;
  user?: User | null; // Menggunakan null untuk menandakan bahwa user bisa kosong
  created_at?: string | null;
  updated_at?: string | null;

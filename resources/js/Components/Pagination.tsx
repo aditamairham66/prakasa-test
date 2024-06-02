@@ -38,7 +38,6 @@ function Pagination({ data: { links, from, to, total } }: PaginationProps) {
         return updatedUrl;
     };
     
-
     function getClassName(active: boolean) {
         if (active) {
             return "card w-10 h-10 bg-primary text-white p-4 inline-flex items-center text-sm font-medium rounded active";
@@ -52,8 +51,6 @@ function Pagination({ data: { links, from, to, total } }: PaginationProps) {
         label: link.label.replace('Previous', '').replace('Next', ''),
         url: addCurrentParamsToUrl(link.url, url),
     }));
-    console.log(links, sanitizedLinks)
-
 
     return (
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between py-2 mt-3">

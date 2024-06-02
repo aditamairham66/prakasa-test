@@ -20,7 +20,7 @@ const LoadScripts = () => {
         "/assets/libs/@frostui/tailwindcss/frostui.js",
         "/assets/libs/sweetalert2/sweetalert2.min.js",
         // "/assets/libs/glightbox/js/glightbox.min.js",
-        "/assets/libs/quill/quill.min.js",
+        // "/assets/libs/quill/quill.min.js",
         "/assets/js/app.js",
         // "/assets/libs/flatpickr/flatpickr.min.js",
       ];

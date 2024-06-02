@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Post\AddRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     public function __construct(
-        public $title = "Posts"
+        public $title = "Post"
     )
     {}
     
@@ -45,9 +46,9 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AddRequest $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
