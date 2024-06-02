@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Post;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -19,6 +20,9 @@ class PostController extends Controller
     {
         return inertia('Post/Index', [
             'title' => $this->title,
+            'table' => Post::latest()
+                ->with(['user'])
+                ->paginate(10),
         ]);
     }
 

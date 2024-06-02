@@ -1,10 +1,27 @@
 import React from 'react';
 import {Head, usePage} from "@inertiajs/inertia-react";
 import AdminLayout from '@/Layouts/AdminLayout';
+import Table from '@/Components/Table/Index';
+import Thead from '@/Components/Table/Thead';
+import Tbody from '@/Components/Table/Tbody';
+import Row from '@/Components/Table/Row';
+import Th from '@/Components/Table/Th';
+import Td from '@/Components/Table/Td';
+import { Post as PostProps } from '@/types';
+import Pagination from '@/Components/Pagination';
+
+interface PageProps {
+    title: string; 
+    table: { 
+        data: PostProps[];
+    };
+}
 
 const Post: React.FC = () => {
-    const { props } = usePage();
-    const { title } = props;
+    // @ts-ignore
+    const { props } = usePage<PageProps>();
+    const { title, table }: PageProps= props;
+    console.log(table)
 
     return (
         <AdminLayout>
@@ -12,31 +29,50 @@ const Post: React.FC = () => {
 
             <div className="card">
                 <div className="flex flex-wrap justify-between items-center gap-2 p-6">
-                    {title}
+                    Header
                     
                     <div className="flex flex-wrap gap-2"></div>
                 </div>
-                <div className="relative overflow-x-auto">
-                    <table className="w-full divide-y divide-gray-300">
-                        <thead className="border-t bg-gray-100">
-                            <tr>
-                                <th scope="col" className="py-3.5 ps-4 pe-3 text-left text-sm font-semibold dark:text-gray-900 text-gray-200">No</th>
-                                <th scope="col" className="py-3.5 text-left text-sm font-semibold dark:text-gray-900 text-gray-200">Name</th>
-                                <th scope="col" className="py-3.5 text-left text-sm font-semibold dark:text-gray-900 text-gray-200">Name</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                            <tr>
-                                <td className="whitespace-nowrap py-4 ps-4 pe-3 text-sm font-medium text-gray-900">
-                                    <b>#123</b>
-                                </td>
-                                <td className="whitespace-nowrap py-4 pe-3 text-sm text-gray-800">Name</td>
-                                <td className="whitespace-nowrap py-4 pe-3 text-sm text-gray-800">Name</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+                {/* @ts-ignore */}
+                <Table id="tableResult">
+                    <Thead>
+                        <Row>
+                            {/* @ts-ignore */}
+                            <Th className='ps-4 pe-3' width="50px">No</Th>
+                            {/* @ts-ignore */}
+                            <Th width="200px">Users</Th>
+                            <Th>Name</Th>
+                            {/* @ts-ignore */}
+                            <Th width="100px">Image</Th>
+                            <Th>Action</Th>
+                        </Row>
+                    </Thead>
+                    <Tbody>
+                        {table.data.length > 0 ? (
+                            table.data.map(({ id, user, title, image }, index) => (
+                                <Row key={id}>
+                                    <Td className='ps-4 pe-3'>
+                                        <b>{index + 1}</b>
+                                    </Td>
+                                    <Td>{user?.name}</Td>
+                                    <Td>{title}</Td>
+                                    <Td>{image}</Td>
+                                    <Td></Td>
+                                </Row>
+                            ))
+                        ) : (
+                            <Row>
+                                {/* @ts-ignore */}
+                                <Td colSpan={5} className="text-center">Data not found</Td>
+                            </Row>
+                        )}
+                    </Tbody>
+                </Table>
             </div>
+
+            {/* @ts-ignore */}
+            <Pagination data={table}/>
         </AdminLayout>
     );
 };
