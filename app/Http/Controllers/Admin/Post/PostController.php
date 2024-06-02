@@ -56,13 +56,18 @@ class PostController extends Controller
         $userId = Auth::user()->id ?? 1;
         $image = Upload::store('image', 'posts');
 
-        $post = Post::create([
+        $data = [
             'title' => $request->title,
-            'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
-            'image' => $image,
+            'date' => Carbon::parse($request->date)->format('Y-m-d'),
             'desc' => $request->desc,
             'user_id' => $userId,
-        ]);
+        ];
+        
+        if ($image) {
+            $data['image'] = $image;
+        }
+
+        $post = Post::create($data);
 
         return redirect()->route('post.index')
             ->with([
@@ -100,18 +105,19 @@ class PostController extends Controller
     {
         $userId = Auth::user()->id ?? 1;
         $image = Upload::store('image', 'posts');
-
-        $data = [];
-        if ($image) {
-            $data['image'] = $image;
-        }
-
-        $post->update($data + [
+        
+        $data = [
             'title' => $request->title,
             'date' => Carbon::parse($request->date)->format('Y-m-d'),
             'desc' => $request->desc,
             'user_id' => $userId,
-        ]);
+        ];
+        
+        if ($image) {
+            $data['image'] = $image;
+        }
+        
+        $post->update($data);        
 
         return redirect()->route('post.index')
             ->with([

@@ -34,15 +34,20 @@ class PostController extends Controller
         $userId = Auth::guard('api')->user()->id;
         $image = Upload::store('image', 'posts');
 
-        $save = Post::create([
+        $data = [
             'title' => $request->title,
-            'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
-            'image' => $image,
+            'date' => Carbon::parse($request->date)->format('Y-m-d'),
             'desc' => $request->desc,
             'user_id' => $userId,
-        ]);
+        ];
+        
+        if ($image) {
+            $data['image'] = $image;
+        }
 
-        return $this->respondWithMessage(new PostResource($save), 'Success Created');
+        $post = Post::create($data);
+
+        return $this->respondWithMessage(new PostResource($post), 'Success Created');
     }
 
     public function update(EditRequest $request, Post $post) 
@@ -50,17 +55,18 @@ class PostController extends Controller
         $userId = Auth::guard('api')->user()->id;
         $image = Upload::store('image', 'posts');
 
-        $data = [];
+        $data = [
+            'title' => $request->title,
+            'date' => Carbon::parse($request->date)->format('Y-m-d'),
+            'desc' => $request->desc,
+            'user_id' => $userId,
+        ];
+        
         if ($image) {
             $data['image'] = $image;
         }
-
-        $post->update($data + [
-            'title' => $request->title,
-            'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
-            'desc' => $request->desc,
-            'user_id' => $userId,
-        ]);
+        
+        $post->update($data); 
 
         return $this->respondWithMessage(new PostResource($post), 'Success Updated');
     }
