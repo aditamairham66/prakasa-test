@@ -18,6 +18,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index']);
 # posts
+Route::group([
+ 'prefix' => 'post',
+ 'as' => 'post.',
+ 'controller' => PostController::class
+], function () {
+ Route::get('/delete-image/{post}', 'deleteImage')->name('destroy-image');
+});
 Route::resource('post', PostController::class);
 # users
 Route::resource('user', UserController::class);

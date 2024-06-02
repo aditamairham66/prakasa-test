@@ -5,6 +5,7 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@types/flatpickr": "^3.1.2",
         "@types/nprogress": "^0.2.3",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
@@ -23,6 +24,7 @@
         "@inertiajs/progress": "^0.2.7",
         "@types/glob": "^8.1.0",
         "@types/node": "^20.12.12",
+        "flatpickr": "^4.6.13",
         "glightbox": "^3.3.0",
         "glob": "^10.4.1",
         "nprogress": "^0.2.0",

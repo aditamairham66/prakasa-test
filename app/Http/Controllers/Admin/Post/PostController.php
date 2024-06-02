@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Post;
 
+use App\Enums\TypeMessage;
+use App\Helpers\Upload;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Post\AddRequest;
 use App\Models\Post;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -27,7 +31,7 @@ class PostController extends Controller
                     $query->where('title', 'like', '%' . $search . '%');
                     $query->orWhere('desc', 'like', '%' . $search . '%');
                 })
-                ->orderBy('id', 'ASC')
+                ->orderBy('id', 'DESC')
                 ->paginate(10),
         ]);
     }
@@ -48,7 +52,22 @@ class PostController extends Controller
      */
     public function store(AddRequest $request)
     {
-        dd($request->all());
+        $userId = Auth::user()->id ?? 1;
+        $image = Upload::store('image', 'posts');
+
+        $post = Post::create([
+            'title' => $request->title,
+            'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
+            'image' => $image,
+            'desc' => $request->desc,
+            'user_id' => $userId,
+        ]);
+
+        return redirect()->route('post.index')
+            ->with([
+                'message_type' => TypeMessage::SUCCESS,
+                'message' => 'Successfully insert data.',
+            ]);
     }
 
     /**
@@ -78,7 +97,23 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        dd($request->all());
+        $userId = Auth::user()->id ?? 1;
+        $image = Upload::store('image', 'posts');
+
+        $post->update([
+            'title' => $request->title,
+            'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
+            'image' => $image,
+            'desc' => $request->desc,
+            'user_id' => $userId,
+        ]);
+
+        return redirect()->route('post.index')
+            ->with([
+                'message_type' => TypeMessage::SUCCESS,
+                'message' => 'Successfully updated data.',
+            ]);
     }
 
     /**
@@ -90,8 +125,26 @@ class PostController extends Controller
 
         return redirect()->route('post.index')
             ->with([
-                'message_type' => 'success',
-                'message' => 'Data Berhasil Dihapus!',
+                'message_type' => TypeMessage::SUCCESS,
+                'message' => 'Successfully deleted data.',
+            ]);
+    }
+
+    public function deleteImage(Request $request, Post $post)
+    {
+        $field = $request->field;
+
+        // remove the image
+        Upload::remove($post->$field);
+
+        // update the image
+        $post->$field = null;
+        $post->save();
+
+        return redirect()->back()
+            ->with([
+                'message_type' => TypeMessage::WARNING,
+                'message' => 'Successfully deleted image.',
             ]);
     }
 }

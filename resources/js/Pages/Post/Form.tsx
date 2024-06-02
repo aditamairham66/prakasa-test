@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Head, useForm, usePage } from '@inertiajs/inertia-react';
+import { Head, Link, useForm, usePage } from '@inertiajs/inertia-react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Post } from '@/types';
 import Quill from 'quill';
-import 'react-quill/dist/quill.snow.css';
+import flatpickr from 'flatpickr';
 import { Inertia } from '@inertiajs/inertia';
 
 interface PageProps {
@@ -18,20 +18,19 @@ interface PageProps {
 }
 
 const PostForm: React.FC = () => {
-    // @ts-ignore
     const { props } = usePage<PageProps>();
     const { title, form, errors } = props;
 
-    const defaultFilterData = {
+    const { data, setData } = useForm({
         title: form.title || '',
         date: form.date || '',
         image: form.image || '',
         desc: form.desc || '',
-    };
-    const { data, setData } = useForm(defaultFilterData);
+    });
 
     useEffect(() => {
         const descContainer = document.querySelector('#descContent') as HTMLElement;
+        const descInput = document.querySelector('#desc') as HTMLTextAreaElement;
         if (descContainer) {
             descContainer.style.height = '200px';
             const quillDesc = new Quill('#descContent', {
@@ -52,17 +51,29 @@ const PostForm: React.FC = () => {
             });
 
             quillDesc.on('text-change', () => {
-                const descInput = document.querySelector('#desc') as HTMLInputElement;
+                const newValue = quillDesc.root.innerHTML;
                 if (descInput) {
-                    descInput.value = quillDesc.root.innerHTML;
+                    descInput.value = newValue;
+                    setData(prevData => ({ ...prevData, desc: newValue }));
                 }
             });
         }
     }, []);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    useEffect(() => {
+        const datepickerElement = document.querySelector(".datepicker") as HTMLInputElement;
+        if (datepickerElement) {
+            flatpickr(datepickerElement, {
+                dateFormat: "Y-m-d",
+                onChange: function(selectedDates, dateStr, instance) {
+                    setData(prevData => ({ ...prevData, date: dateStr }));
+                },
+            });
+        }
+    }, []);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, files } = e.target;
-        console.log(name, value, files)
         if (name === 'image' && files) {
             setData(name, files[0]);
         } else {
@@ -72,18 +83,12 @@ const PostForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        console.log(data)
-
-        // if (!form.title) {
-            Inertia.post('/post', data, {
-                forceFormData: true,
-            });
-        // } else {
-        //     Inertia.post(`/post/${form.id}`, data, {
-        //         forceFormData: true,
-        //     });
-        // }
+        console.log(data);
+        if (!form.id) {
+          Inertia.post('/post', data, { forceFormData: true });
+        } else {
+          Inertia.put(`/post/${form.id}`, data, { forceFormData: true });
+        }
     };
 
     return (
@@ -121,7 +126,7 @@ const PostForm: React.FC = () => {
                                 type="text"
                                 name="date"
                                 id="date"
-                                className="form-input mt-1"
+                                className="form-input datepicker mt-1"
                                 placeholder="Enter Date"
                                 aria-describedby="input-helper-text"
                                 value={data.date}
@@ -134,30 +139,44 @@ const PostForm: React.FC = () => {
                     <div className="mt-3">
                         <label className="self-stretch h-[18px] text-xs font-semibold font-['Poppins']">Image</label>
                         <div className="mt-1">
-                            <div className="w-36 h-[209px] flex-col justify-start items-start gap-6 inline-flex">
-                                <img
-                                    className="w-36 h-36 rounded-full"
-                                    id="preview-image"
-                                    src="https://via.placeholder.com/144x144"
-                                    alt="Preview"
-                                />
-                                <input
-                                    type="file"
-                                    name="image"
-                                    id="image"
-                                    className="hidden"
-                                    accept="image/*"
-                                    aria-describedby="input-helper-text"
-                                    upload="file"
-                                    onChange={handleInputChange}
-                                />
-                                <label
-                                    htmlFor="image"
-                                    className="self-stretch px-6 py-2.5 rounded-lg border border-rose-200 justify-center items-center gap-2.5 inline-flex cursor-pointer"
-                                >
-                                    <div className="text-red-600 text-sm font-medium font-['Poppins']">Browse</div>
-                                </label>
-                            </div>
+                            {form.image ? (
+                                <>
+                                    <div className="grid grid-cols-5">
+                                        <img alt="gallery" className="object-cover object-center rounded" src={`/${form.image}`} />
+                                    </div>
+                                    <Link
+                                        href={`/post/delete-image/${form.id}?field=image`}
+                                        className="delete-button-img inline-flex items-center gap-2 rounded-md border border-transparent bg-red-500 px-4 py-1 mt-2 text-sm font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none"
+                                    >
+                                        <i className="mgc_home_3_line"></i> Delete
+                                    </Link>
+                                </>
+                            ) : (
+                                <div className="w-36 h-[209px] flex-col justify-start items-start gap-6 inline-flex">
+                                    <img
+                                        className="w-36 h-36 rounded-full"
+                                        id="preview-image"
+                                        src="https://via.placeholder.com/144x144"
+                                        alt="Preview"
+                                    />
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        id="image"
+                                        className="hidden"
+                                        accept="image/*"
+                                        aria-describedby="input-helper-text"
+                                        upload="file"
+                                        onChange={handleInputChange}
+                                    />
+                                    <label
+                                        htmlFor="image"
+                                        className="self-stretch px-6 py-2.5 rounded-lg border border-rose-200 justify-center items-center gap-2.5 inline-flex cursor-pointer"
+                                    >
+                                        <div className="text-red-600 text-sm font-medium font-['Poppins']">Browse</div>
+                                    </label>
+                                </div>
+                            )}
                         </div>
                         {errors.image && <div className="pristine-error text-help" role="alert">{errors.image}</div>}
                     </div>
@@ -166,27 +185,26 @@ const PostForm: React.FC = () => {
                         <label className="self-stretch h-[18px] text-xs font-semibold font-['Poppins']">
                             Description <span className="text-red-500">*</span>
                         </label>
-                        <div id="descContent" className="form-input mt-1">{data.desc}</div>
-                        <input
-                            type='text'
+                        <div id="descContent" className="form-input mt-1">{form.desc}</div>
+                        <textarea
                             name="desc"
                             id="desc"
                             className="form-input"
                             placeholder="Enter Description"
-                            value={data.desc}
+                            value={form.desc}
                             onChange={handleInputChange}
-                        />
+                        ></textarea>
                         {errors.desc && <div className="pristine-error text-help" role="alert">{errors.desc}</div>}
                     </div>
 
                     <div className="flex justify-start gap-3 mt-5">
-                      <a href="" className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none">
-                          Back
-                      </a>
-                      <button type="submit" className="inline-flex items-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none">
-                          Save
-                      </button>
-                  </div>
+                        <a href="#" className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none">
+                            Back
+                        </a>
+                        <button type="submit" className="inline-flex items-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none">
+                            Save
+                        </button>
+                    </div>
                 </div>
             </form>
         </AdminLayout>
