@@ -116,13 +116,13 @@ const User: React.FC = () => {
                                     <Td>{name}</Td>
                                     <Td>{email}</Td>
                                     <Td>
-                                        <a href={`/post/${id}`} className="me-0.5">
+                                        <a href={`/user/${id}`} className="me-0.5">
                                             <i className="mgc_eye_2_fill text-lg"></i>
                                         </a>
-                                        <a href={`/post/${id}/edit`} className="me-0.5">
+                                        <a href={`/user/${id}/edit`} className="me-0.5">
                                             <i className="mgc_edit_line text-lg"></i>
                                         </a>
-                                        <a href="#" data-url={`/post/${id}`} className="ms-0.5 btn-delete-table">
+                                        <a href="#" data-url={`/user/${id}`} className="ms-0.5 btn-delete-table">
                                             <i className="mgc_delete_line text-xl"></i>
                                         </a>
                                     </Td>
