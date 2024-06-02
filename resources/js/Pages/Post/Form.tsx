@@ -74,10 +74,12 @@ const PostForm: React.FC = () => {
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        // @ts-ignore
         const { name, value, files } = e.target;
         if (name === 'image' && files) {
             setData(name, files[0]);
         } else {
+            // @ts-ignore
             setData(name, value);
         }
     };
@@ -167,6 +169,7 @@ const PostForm: React.FC = () => {
                                         className="hidden"
                                         accept="image/*"
                                         aria-describedby="input-helper-text"
+                                        // @ts-ignore
                                         upload="file"
                                         onChange={handleInputChange}
                                     />
