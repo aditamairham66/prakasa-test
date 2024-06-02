@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Head, usePage } from "@inertiajs/inertia-react";
+import { Head, Link, usePage } from "@inertiajs/inertia-react";
 import AdminLayout from '@/Layouts/AdminLayout';
 import Table from '@/Components/Table/Index';
 import Thead from '@/Components/Table/Thead';
@@ -72,9 +72,15 @@ const Post: React.FC = () => {
 
             <div className="card">
                 <div className="flex flex-wrap justify-between items-center gap-2 p-6">
-                    Header
+                    <div>
+                        Header
+                    </div>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Link href="/post/create" className="btn btn-sm bg-danger/20 text-sm font-medium text-danger hover:text-white hover:bg-danger">
+                            <i className="mgc_add_circle_line me-3"></i> Add Calendar Event
+                        </Link>
+
                         <div>
                             <input
                                 type="text"
@@ -118,10 +124,10 @@ const Post: React.FC = () => {
                                         </a>
                                     </Td>
                                     <Td>
-                                        <a href="https://superapp.telin.net/admin/calendar-event/101" className="me-0.5">
+                                        <a href={`/post/${id}`} className="me-0.5">
                                             <i className="mgc_eye_2_fill text-lg"></i>
                                         </a>
-                                        <a href="https://superapp.telin.net/admin/calendar-event/101/edit" className="me-0.5">
+                                        <a href={`/post/${id}/edit`} className="me-0.5">
                                             <i className="mgc_edit_line text-lg"></i>
                                         </a>
                                         <a href="#" data-url={`/post/${id}`} className="ms-0.5 btn-delete-table">

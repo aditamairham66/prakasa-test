@@ -36,7 +36,10 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Post/Form', [
+            'title' => "Add ".$this->title,
+            'form' => new Post(),
+        ]);
     }
 
     /**
@@ -52,7 +55,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return inertia('Post/Detail', [
+            'title' => "Detail ".$this->title,
+            'form' => $post,
+        ]);
     }
 
     /**
@@ -60,7 +66,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return inertia('Post/Form', [
+            'title' => "Edit ".$this->title,
+            'form' => $post,
+        ]);
     }
 
     /**
