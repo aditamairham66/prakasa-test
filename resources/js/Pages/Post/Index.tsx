@@ -78,7 +78,7 @@ const Post: React.FC = () => {
 
                     <div className="flex flex-wrap items-center gap-2">
                         <Link href="/post/create" className="btn btn-sm bg-danger/20 text-sm font-medium text-danger hover:text-white hover:bg-danger">
-                            <i className="mgc_add_circle_line me-3"></i> Add Calendar Event
+                            <i className="mgc_add_circle_line me-3"></i> Add Post
                         </Link>
 
                         <div>

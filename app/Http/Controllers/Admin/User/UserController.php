@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin\User;
 
+use App\Enums\TypeMessage;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -15,10 +18,17 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return inertia('User/Index', [
             'title' => $this->title,
+            'table' => User::query()
+                ->when($request->input('q'), function ($query, $search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                    $query->orWhere('email', 'like', '%' . $search . '%');
+                })
+                ->orderBy('id', 'DESC')
+                ->paginate(10),
         ]);
     }
 
@@ -27,7 +37,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('User/Form', [
+            'title' => "Add ".$this->title,
+            'form' => new User(),
+        ]);
     }
 
     /**
@@ -35,38 +48,77 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ];
+
+        $post = User::create($data);
+
+        return redirect()->route('user.index')
+            ->with([
+                'message_type' => TypeMessage::SUCCESS,
+                'message' => 'Successfully insert data.',
+            ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        return inertia('User/Detail', [
+            'title' => "Detail ".$this->title,
+            'form' => $user,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        return inertia('User/Form', [
+            'title' => "Edit ".$this->title,
+            'form' => $user,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+        ];
+
+        if ($request->password) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);        
+
+        return redirect()->route('user.index')
+            ->with([
+                'message_type' => TypeMessage::SUCCESS,
+                'message' => 'Successfully updated data.',
+            ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return redirect()->route('user.index')
+            ->with([
+                'message_type' => TypeMessage::SUCCESS,
+                'message' => 'Successfully deleted data.',
+            ]);
     }
 }
