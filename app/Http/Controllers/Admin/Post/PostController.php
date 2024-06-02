@@ -16,12 +16,16 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return inertia('Post/Index', [
             'title' => $this->title,
             'table' => Post::query()
                 ->with(['user'])
+                ->when($request->input('q'), function ($query, $search) {
+                    $query->where('title', 'like', '%' . $search . '%');
+                    $query->orWhere('desc', 'like', '%' . $search . '%');
+                })
                 ->orderBy('id', 'ASC')
                 ->paginate(10),
         ]);
@@ -46,7 +50,7 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post)
     {
         //
     }
@@ -54,7 +58,7 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Post $post)
     {
         //
     }
@@ -62,7 +66,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Post $post)
     {
         //
     }
@@ -70,8 +74,14 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return redirect()->route('post.index')
+            ->with([
+                'message_type' => 'success',
+                'message' => 'Data Berhasil Dihapus!',
+            ]);
     }
 }

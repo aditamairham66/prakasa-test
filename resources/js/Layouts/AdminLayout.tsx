@@ -4,8 +4,10 @@ import NavbarTop from '@/Components/Layout/NavbarTop';
 import React, { useEffect } from 'react';
 import { PropsWithChildren } from 'react';
 import { usePage } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
 import Sidebar from '@/Components/Layout/Sidebar';
 import GLightbox from 'glightbox';
+import AlertMessage from '@/Components/AlertMessage';
 
 const LoadScripts = () => {
   const { url } = usePage();
@@ -35,8 +37,18 @@ const LoadScripts = () => {
   return null; // Component ini tidak mengembalikan elemen HTML karena hanya berfungsi untuk memuat script.
 }
 
+interface PageProps {
+  session: {
+    message: string;
+    message_type: string;
+  };
+}
+
 const AdminLayout: React.FC<PropsWithChildren> = ({ children }) => {
-  
+  // @ts-ignore
+  const { props } = usePage<PageProps>();
+  const { session }: PageProps = props;
+
   useEffect(() => {
     const uploadInputs: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[upload='file']");
     const btnTableDelete: NodeListOf<HTMLElement> = document.querySelectorAll('.btn-delete-table');    
@@ -81,50 +93,19 @@ const AdminLayout: React.FC<PropsWithChildren> = ({ children }) => {
         }).then(function(t) {
           if (t.isConfirmed) {
             // Kirim permintaan DELETE menggunakan fetch
-            fetch(url, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            Inertia.delete(`${url}`, {
+              onSuccess: page => {
+                console.log(page)
+                button.classList.remove('hidden');
               },
-            }).then(function(response) {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              return response.json();
-            }).then(data => {
-              // @ts-ignore
-              Swal.fire({
-                title: (data.type === "danger" ? "Oops..." : "Good job!"),
-                text: data.message,
-                icon: (data.type === "danger" ? "error" : "success"),
-                customClass: {
-                  confirmButton: "btn bg-primary text-white w-xs mt-2",
-                },
-                buttonsStyling: !1,
-                showCloseButton: !1
-              });
-              
-              if (data.type === "success") {
-                setTimeout(() => {
-                  window.location.reload();
-                  button.classList.remove('hidden');
-                }, 500);
-              }
-            }).catch(error => {
-              // @ts-ignore
-              Swal.fire({
-                title: "Oops...",
-                text: error.toString(),
-                icon: "error",
-                customClass: {
-                  confirmButton: "btn bg-primary text-white w-xs mt-2",
-                },
-                buttonsStyling: !1,
-                showCloseButton: !1
-              });
-
-              button.classList.remove('hidden');
+              onError: errors => {
+                console.log(errors)
+                button.classList.remove('hidden');
+              },
+              onFinish: visit => {
+                console.log(visit)
+                button.classList.remove('hidden');
+              },
             });
           }
         });
@@ -181,6 +162,11 @@ const AdminLayout: React.FC<PropsWithChildren> = ({ children }) => {
           <NavbarTop/>
 
           <main className="flex-grow p-6">
+            {session.message && (
+              // @ts-ignore
+              <AlertMessage message={session.message} type={session.message_type}/>
+            )}
+
             {children}
           </main>
 

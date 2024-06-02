@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/inertia-react';
+import { Link, usePage } from '@inertiajs/inertia-react';
 import React from 'react';
 
 export interface PaginationLinkProps {
@@ -17,6 +17,22 @@ interface PaginationProps {
 }
 
 function Pagination({ data: { links, from, to, total } }: PaginationProps) {
+    const { url } = usePage();
+    
+    const addCurrentParamsToUrl = (url: string | null, currentPageUrl: string | null): string | null => {
+        if (!url || !currentPageUrl) return null;
+        const currentParams = new URLSearchParams(currentPageUrl.split('?')[1] || ''); // Get current URL params
+        const newParams = new URLSearchParams(); // Create new URL params
+        // Iterate over current params and add them to new params
+        currentParams.forEach((value, key) => {
+            newParams.append(key, value);
+        });
+        // If the URL already has a query string, append '&', otherwise append '?'
+        const separator = url.includes('?') ? '&' : '?';
+        // Append new params to the pagination URL
+        return `${url}${separator}${newParams.toString()}`;
+    };
+
     function getClassName(active: boolean) {
         if (active) {
             return "card w-10 h-10 bg-primary text-white p-4 inline-flex items-center text-sm font-medium rounded active";
@@ -27,7 +43,8 @@ function Pagination({ data: { links, from, to, total } }: PaginationProps) {
 
     const sanitizedLinks = links.map(link => ({
         ...link,
-        label: link.label.replace('Previous', '').replace('Next', '')
+        label: link.label.replace('Previous', '').replace('Next', ''),
+        url: addCurrentParamsToUrl(link.url, url),
     }));
 
     return (
