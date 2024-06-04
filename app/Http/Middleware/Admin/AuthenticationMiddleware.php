@@ -20,7 +20,7 @@ class AuthenticationMiddleware
         if (!auth()->check()) {
             return redirect()->action([AuthController::class, 'login'])
                 ->with([
-                    'type' => TypeMessage::INFO,
+                    'message_type' => TypeMessage::INFO,
                     'message' => "You must login first !"
                 ]);
         }

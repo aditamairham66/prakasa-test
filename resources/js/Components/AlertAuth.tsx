@@ -12,6 +12,8 @@ const AlertAuth: React.FC<AlertAuthProps> = ({ message, type }) => {
 
   let className = 'text-sm text-white rounded-md p-4 mb-2 ';
 
+  console.log(type)
+
   switch (type) {
     case 'danger':
       className += 'bg-danger';

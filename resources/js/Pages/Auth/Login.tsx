@@ -43,7 +43,7 @@ const Login: React.FC = () => {
     <AuthLayout>
       <Head title={title} />
       
-      <div className="bg-gradient-to-r from-rose-100 to-teal-100 dark:from-gray-700 dark:via-gray-900 dark:to-black">
+      <div className="bg-gradient-to-r from-rose-100 to-teal-100">
         <div className="h-screen w-screen flex justify-center items-center">
           <div className="2xl:w-1/4 lg:w-1/3 md:w-1/2 w-full">
             {session.message && (

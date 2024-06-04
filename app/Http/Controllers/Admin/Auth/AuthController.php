@@ -31,7 +31,7 @@ class AuthController extends Controller
 
         return back()
             ->with([
-                'type' => TypeMessage::ERROR,
+                'message_type' => TypeMessage::ERROR,
                 'message' => "Username is not found."
             ]);    
     }
@@ -43,7 +43,7 @@ class AuthController extends Controller
         return redirect()
             ->action([AuthController::class, 'login'])
             ->with([
-                'type' => TypeMessage::INFO,
+                'message_type' => TypeMessage::INFO,
                 'message' => "Please you have to log in first! to continue.",
             ]);
     }
