@@ -1,13 +1,12 @@
-import BtnToTop from '@/Components/Layout/BtnToTop';
-import Footer from '@/Components/Layout/Footer';
-import NavbarTop from '@/Components/Layout/NavbarTop';
 import React, { useEffect } from 'react';
 import { PropsWithChildren } from 'react';
 import { usePage } from '@inertiajs/inertia-react';
-import { Inertia } from '@inertiajs/inertia';
+import BtnToTop from '@/Components/Layout/BtnToTop';
+import Footer from '@/Components/Layout/Footer';
+import NavbarTop from '@/Components/Layout/NavbarTop';
 import Sidebar from '@/Components/Layout/Sidebar';
-import GLightbox from 'glightbox';
 import AlertMessage from '@/Components/AlertMessage';
+import { addScrollToTopListener, addUploadInputListener, addButtonDeleteListener, initializeLightbox, buttonToggleMenuListener } from '@/Helpers/utils';
 
 const LoadScripts = () => {
   const { url } = usePage();
@@ -21,7 +20,7 @@ const LoadScripts = () => {
         "/assets/libs/sweetalert2/sweetalert2.min.js",
         // "/assets/libs/glightbox/js/glightbox.min.js",
         // "/assets/libs/quill/quill.min.js",
-        "/assets/js/app.js",
+        // "/assets/js/app.js",
         // "/assets/libs/flatpickr/flatpickr.min.js",
       ];
 
@@ -50,81 +49,11 @@ const AdminLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const { session }: PageProps = props;
 
   useEffect(() => {
-    const uploadInputs: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[upload='file']");
-    const btnTableDelete: NodeListOf<HTMLElement> = document.querySelectorAll('.btn-delete-table');    
-
-    uploadInputs.forEach(function(input: HTMLInputElement) {
-      input.addEventListener("change", function(event) {
-        const image = document.getElementById('preview-image') as HTMLImageElement;
-        
-        if (input.files && input.files[0]) {
-          const reader = new FileReader();
-          
-          reader.onload = function(e) {
-            if (image) {
-              image.src = e.target?.result as string;
-            }
-          };
-          
-          reader.readAsDataURL(input.files[0]);
-        }
-      });
-    });    
-
-    btnTableDelete.forEach((button) => {
-      button.addEventListener('click', function(e) {
-        const url = this.dataset.url || ''; // Ambil URL dari tombol
-        
-        // @ts-ignore
-        Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Delete",
-          cancelButtonText: "No, cancel!",
-          customClass: {
-            confirmButton: "btn bg-primary text-white w-xs me-2 mt-2",
-            cancelButton: "btn bg-danger text-white w-xs mt-2"
-          },
-          buttonsStyling: false,
-          showCloseButton: false,
-          // @ts-ignore
-        }).then(function(t) {
-          if (t.isConfirmed) {
-            // Kirim permintaan DELETE menggunakan fetch
-            Inertia.delete(`${url}`, {
-              onSuccess: page => {
-                console.log(page)
-                button.classList.remove('hidden');
-              },
-              onError: errors => {
-                console.log(errors)
-                button.classList.remove('hidden');
-              },
-              onFinish: visit => {
-                console.log(visit)
-                button.classList.remove('hidden');
-              },
-            });
-          }
-        });
-      });
-    });
-
-    const lightbox = GLightbox({
-      selector: ".image-popup"
-    });
-
-    // Cleanup listeners on unmount
-    return () => {
-      uploadInputs.forEach((input) => {
-        input.removeEventListener("change", () => {});
-      });
-      btnTableDelete.forEach((button) => {
-        button.removeEventListener('click', () => {});
-      });
-    };
+    addScrollToTopListener();
+    addUploadInputListener();
+    addButtonDeleteListener();
+    initializeLightbox();
+    buttonToggleMenuListener();
   }, []);
   
   return (
